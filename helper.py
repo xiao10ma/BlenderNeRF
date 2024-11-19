@@ -236,46 +236,56 @@ def cos_camera_update(scene):
     if CAMERA_NAME in scene.objects.keys():
         scene.objects[CAMERA_NAME].location = sample_from_sphere(scene)
 
-def generate_fixed_camera_positions(scene):
+def generate_fixed_camera_positions(scene, is_test=False):
     """Generate fixed camera positions"""
     positions = []
-    n = scene.num_fixed_cameras
+    n = scene.num_fixed_cameras if not is_test else 2  # test camera fixed to 2
     radius = scene.fixed_radius
     
     for i in range(n):
         # Calculate angles evenly distributed on a circle
         theta = (2 * math.pi * i) / n
         
-        # Calculate camera position
-        x = radius * math.cos(theta)
-        y = radius * math.sin(theta)
-        z = 1.0  # fixed height
-        
+        if is_test:
+            # test camera position slightly adjusted to avoid overlap with training cameras
+            theta += math.pi / 4
+            x = radius * math.cos(theta)
+            y = radius * math.sin(theta)
+            z = 0.5  # slightly lower
+            radius *= 1.1  # slightly larger radius
+        else:
+            x = radius * math.cos(theta)
+            y = radius * math.sin(theta)
+            z = 1.0  # fixed height
+
         positions.append(mathutils.Vector((x, y, z)))
     
     return positions
 
-def create_fixed_cameras(scene):
+def create_fixed_cameras(scene, is_test=False):
     """Fix camera on sphere"""
     if not scene.fixed_cameras:
         return
         
+    prefix = "Test" if is_test else CAMERA_NAME
+    n = 2 if is_test else scene.num_fixed_cameras
+        
     # Delete existing cameras
-    for i in range(scene.num_fixed_cameras):
-        cam_name = f"{CAMERA_NAME}_{i}"
+    for i in range(n):
+        cam_name = f"{prefix}_{i}"
         if cam_name in scene.objects:
             objects = bpy.data.objects
             objects.remove(objects[cam_name], do_unlink=True)
     
     # Generate new cameras
-    positions = generate_fixed_camera_positions(scene)
+    positions = generate_fixed_camera_positions(scene, is_test)
     cameras = []
     
     for i, pos in enumerate(positions):
         bpy.ops.object.camera_add(location=pos)
         camera = bpy.context.active_object
-        camera.name = f"{CAMERA_NAME}_{i}"
-        camera.data.name = f"{CAMERA_NAME}_{i}"
+        camera.name = f"{prefix}_{i}"
+        camera.data.name = f"{prefix}_{i}"
         camera.data.lens = scene.focal
         
         # Add constraint to keep camera always facing the origin
