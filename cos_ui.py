@@ -44,3 +44,8 @@ class COS_UI(bpy.types.Panel):
 
         layout.separator()
         layout.operator('object.camera_on_sphere', text='PLAY COS')
+
+        layout.prop(scene, 'fixed_cameras', toggle=True)
+        if scene.fixed_cameras:
+            layout.prop(scene, 'num_fixed_cameras')
+            layout.prop(scene, 'fixed_radius')

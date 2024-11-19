@@ -69,6 +69,10 @@ PROPS = [
     ('init_camera_exists', bpy.props.BoolProperty(name='Init camera exists', description='Whether the camera initially exists', default=False) ),
     ('init_active_camera', bpy.props.PointerProperty(type=bpy.types.Object, name='Init active camera', description='Pointer to initial active camera', poll=helper.poll_is_camera) ),
     ('init_frame_end', bpy.props.IntProperty(name='Initial Frame End') ),
+
+    ('fixed_cameras', bpy.props.BoolProperty(name='Fixed Cameras', description='Whether to use fixed camera positions', default=False)),
+    ('num_fixed_cameras', bpy.props.IntProperty(name='Number of Cameras', description='Number of fixed cameras to use', default=20, min=1)),
+    ('fixed_radius', bpy.props.FloatProperty(name='Fixed Radius', description='Radius for fixed camera positions', default=3.5, min=0.1)),
 ]
 
 # classes to register / unregister

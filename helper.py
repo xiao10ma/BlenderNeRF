@@ -235,3 +235,56 @@ def set_init_props(scene):
 def cos_camera_update(scene):
     if CAMERA_NAME in scene.objects.keys():
         scene.objects[CAMERA_NAME].location = sample_from_sphere(scene)
+
+def generate_fixed_camera_positions(scene):
+    """Generate fixed camera positions"""
+    positions = []
+    n = scene.num_fixed_cameras
+    radius = scene.fixed_radius
+    
+    for i in range(n):
+        # Calculate angles evenly distributed on a circle
+        theta = (2 * math.pi * i) / n
+        
+        # Calculate camera position
+        x = radius * math.cos(theta)
+        y = radius * math.sin(theta)
+        z = 1.0  # fixed height
+        
+        positions.append(mathutils.Vector((x, y, z)))
+    
+    return positions
+
+def create_fixed_cameras(scene):
+    """Fix camera on sphere"""
+    if not scene.fixed_cameras:
+        return
+        
+    # Delete existing cameras
+    for i in range(scene.num_fixed_cameras):
+        cam_name = f"{CAMERA_NAME}_{i}"
+        if cam_name in scene.objects:
+            objects = bpy.data.objects
+            objects.remove(objects[cam_name], do_unlink=True)
+    
+    # Generate new cameras
+    positions = generate_fixed_camera_positions(scene)
+    cameras = []
+    
+    for i, pos in enumerate(positions):
+        bpy.ops.object.camera_add(location=pos)
+        camera = bpy.context.active_object
+        camera.name = f"{CAMERA_NAME}_{i}"
+        camera.data.name = f"{CAMERA_NAME}_{i}"
+        camera.data.lens = scene.focal
+        
+        # Add constraint to keep camera always facing the origin
+        cam_constraint = camera.constraints.new(type='TRACK_TO')
+        cam_constraint.track_axis = 'TRACK_NEGATIVE_Z'
+        cam_constraint.up_axis = 'UP_Y'
+        cam_constraint.target = bpy.data.objects.new("Target", None)
+        cam_constraint.target.location = (0, 0, 0)
+        
+        cameras.append(camera)
+    
+    return cameras
