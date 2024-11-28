@@ -50,7 +50,7 @@ class CameraOnSphere(blender_nerf_operator.BlenderNeRF_Operator):
             for frame in range(scene.frame_start, scene.frame_end + 1):
                 scene.frame_set(frame)
                 
-                # Training cameras (0-14)
+                # Training cameras
                 for i, camera in enumerate(train_cameras):
                     filename = f"frame{frame_count:06d}/cam{i:02d}.png"
                     frame_data = {
@@ -59,9 +59,9 @@ class CameraOnSphere(blender_nerf_operator.BlenderNeRF_Operator):
                     }
                     train_frames.append(frame_data)
                 
-                # Test cameras (15-16)
+                # Test cameras
                 for i, camera in enumerate(test_cameras):
-                    filename = f"frame{frame_count:06d}/cam{i+15:02d}.png"
+                    filename = f"frame{frame_count:06d}/cam{i+scene.num_train_cameras:02d}.png"
                     frame_data = {
                         'file_path': filename,
                         'transform_matrix': self.listify_matrix(camera.matrix_world)

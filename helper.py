@@ -239,7 +239,7 @@ def cos_camera_update(scene):
 def generate_fixed_camera_positions(scene, is_test=False):
     """Generate fixed camera positions"""
     positions = []
-    n = 15 if not is_test else 2  # 15 training cameras, 2 test cameras
+    n = scene.num_train_cameras if not is_test else scene.num_test_cameras
     radius = scene.fixed_radius
     
     for i in range(n):
@@ -264,7 +264,7 @@ def generate_fixed_camera_positions(scene, is_test=False):
 def create_fixed_cameras(scene, is_test=False):
     """Create fixed cameras"""
     prefix = "Test" if is_test else "Train"
-    n = 2 if is_test else 15
+    n = scene.num_test_cameras if is_test else scene.num_train_cameras
     
     # Delete existing cameras if they exist
     for i in range(n):

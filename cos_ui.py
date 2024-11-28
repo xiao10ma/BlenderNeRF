@@ -47,5 +47,6 @@ class COS_UI(bpy.types.Panel):
 
         layout.prop(scene, 'fixed_cameras', toggle=True)
         if scene.fixed_cameras:
-            layout.prop(scene, 'num_fixed_cameras')
+            layout.prop(scene, 'num_train_cameras')
+            layout.prop(scene, 'num_test_cameras')
             layout.prop(scene, 'fixed_radius')
