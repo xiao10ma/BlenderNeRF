@@ -71,8 +71,9 @@ PROPS = [
     ('init_frame_end', bpy.props.IntProperty(name='Initial Frame End') ),
 
     ('fixed_cameras', bpy.props.BoolProperty(name='Fixed Cameras', description='Whether to use fixed camera positions', default=False)),
-    ('num_fixed_cameras', bpy.props.IntProperty(name='Number of Cameras', description='Number of fixed cameras to use', default=20, min=1)),
+    ('num_fixed_cameras', bpy.props.IntProperty(name='Number of Cameras', description='Number of fixed cameras to use', default=15, min=1)),
     ('fixed_radius', bpy.props.FloatProperty(name='Fixed Radius', description='Radius for fixed camera positions', default=3.5, min=0.1)),
+    ('scene_name', bpy.props.StringProperty(name='Scene Name', description='Name of the output scene directory', default='output')),
 ]
 
 # classes to register / unregister
