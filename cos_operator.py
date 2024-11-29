@@ -53,7 +53,6 @@ class CameraOnSphere(blender_nerf_operator.BlenderNeRF_Operator):
                 # Training cameras
                 for i, camera in enumerate(train_cameras):
                     filename = f"frame{frame_count:06d}/cam{i:02d}"
-                    filename = f"cam{i:02d}"
                     frame_data = {
                         'file_path': filename,
                         'transform_matrix': self.listify_matrix(camera.matrix_world)
